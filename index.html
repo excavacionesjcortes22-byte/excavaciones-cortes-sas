@@ -190,5 +190,95 @@ for(let i=1;i<=15;i++){
  rows.innerHTML+=`<tr><td><b>${code}</b></td><td>Por registrar</td><td>Por registrar</td><td><span class="status">Pendiente</span></td></tr>`;
 }
 </script>
+
+<!-- ACCESO PRIVADO DEL ADMINISTRADOR -->
+<style>
+#login-screen {
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  background:#142b45;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Arial,sans-serif;
+}
+#login-box {
+  background:white;
+  padding:30px;
+  border-radius:12px;
+  width: min(360px, 90%);
+  text-align:center;
+}
+#login-box input, #login-box button {
+  width:100%;
+  box-sizing:border-box;
+  padding:12px;
+  margin:8px 0;
+  border-radius:7px;
+}
+#login-box input {border:1px solid #ccc;}
+#login-box button {
+  background:#ed9b25;
+  border:0;
+  font-weight:bold;
+  cursor:pointer;
+}
+#login-error {color:#b00020;font-size:13px;}
+</style>
+
+<div id="login-screen">
+  <div id="login-box">
+    <h2>EXCAVACIONES CORTES SAS</h2>
+    <p>Acceso del administrador</p>
+    <form id="login-form">
+      <input id="login-email" type="email"
+        placeholder="Correo electrónico" required>
+      <input id="login-password" type="password"
+        placeholder="Contraseña" required>
+      <button type="submit">Ingresar</button>
+    </form>
+    <p id="login-error"></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://xxtuyymnwgkqdwcqqkeg.supabase.co";
+const SUPABASE_KEY = "PEGA_AQUI_TU_PUBLISHABLE_KEY";
+
+const cliente = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+const pantalla = document.getElementById("login-screen");
+const mensaje = document.getElementById("login-error");
+
+async function revisarSesion() {
+  const {data, error} = await cliente.auth.getSession();
+  pantalla.style.display =
+    (!error && data.session) ? "none" : "flex";
+}
+
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  mensaje.textContent = "Verificando acceso...";
+
+  const {error} = await cliente.auth.signInWithPassword({
+    email: document.getElementById("login-email").value,
+    password: document.getElementById("login-password").value
+  });
+
+  if (error) {
+    mensaje.textContent = "No se pudo ingresar. Revisa tus datos.";
+  } else {
+    mensaje.textContent = "";
+    pantalla.style.display = "none";
+  }
+});
+
+revisarSesion();
+</script>
 </body>
 </html>
