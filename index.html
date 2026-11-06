@@ -265,21 +265,21 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   mensaje.textContent = "Verificando acceso...";
 
-  const {error} = await cliente.auth.signInWithPassword({
-    email: document.getElementById("login-email").value,
+  const { error } = await cliente.auth.signInWithPassword({
+    email: document.getElementById("login-email").value.trim(),
     password: document.getElementById("login-password").value
   });
 
   if (error) {
-  mensaje.textContent = "Error: " + error.message;
-} else {
-  mensaje.textContent = "";
-  pantalla.style.display = "none";
-}
+    mensaje.textContent = "Error: " + error.message;
+  } else {
+    mensaje.textContent = "";
+    pantalla.style.display = "none";
   }
 });
 
 revisarSesion();
+
 </script>
 </body>
 </html>
