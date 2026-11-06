@@ -271,10 +271,11 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   });
 
   if (error) {
-    mensaje.textContent = "No se pudo ingresar. Revisa tus datos.";
-  } else {
-    mensaje.textContent = "";
-    pantalla.style.display = "none";
+  mensaje.textContent = "Error: " + error.message;
+} else {
+  mensaje.textContent = "";
+  pantalla.style.display = "none";
+}
   }
 });
 
