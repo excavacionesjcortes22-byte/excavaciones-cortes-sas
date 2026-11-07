@@ -121,14 +121,26 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
   </div>
  </section>
 
- <section id="volquetas" class="page">
-  <div class="section"><h3>🚛 Gestión de volquetas</h3>
-   <p>Registro de la flota de 15 volquetas.</p>
-   <table><thead><tr><th>CÓDIGO</th><th>PLACA</th><th>MARCA</th><th>ESTADO</th></tr></thead>
-   <tbody id="truckRows"></tbody></table>
-   <p class="notice">Los datos de placas y vehículos se completarán al conectar la base de datos.</p>
+<section id="volquetas" class="page">
+  <div class="section">
+    <h3>🚛 Gestión de volquetas</h3>
+    <p>Flota de 15 volquetas de Excavaciones Cortes SAS.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>CÓDIGO</th>
+          <th>PLACA</th>
+          <th>MARCA</th>
+          <th>ESTADO</th>
+        </tr>
+      </thead>
+      <tbody id="truckRows">
+        <tr><td colspan="4">Cargando volquetas...</td></tr>
+      </tbody>
+    </table>
   </div>
- </section>
+</section>
 
  <section id="combustible" class="page">
   <div class="section"><h3>⛽ Control de combustible</h3>
@@ -255,10 +267,46 @@ const cliente = window.supabase.createClient(
 const pantalla = document.getElementById("login-screen");
 const mensaje = document.getElementById("login-error");
 
+async function cargarVolquetas() {
+  const filas = document.getElementById("truckRows");
+
+  filas.innerHTML = '<tr><td colspan="4">Cargando...</td></tr>';
+
+  const { data, error } = await cliente
+    .from("volquetas")
+    .select("codigo, placa, marca, estado")
+    .order("codigo");
+
+  if (error) {
+    filas.innerHTML = '<tr><td colspan="4">Error al cargar volquetas</td></tr>';
+    console.error(error);
+    return;
+  }
+
+  filas.innerHTML = "";
+
+  data.forEach(v => {
+    const fila = document.createElement("tr");
+
+    [v.codigo, v.placa || "-", v.marca || "-", v.estado || "-"].forEach(valor => {
+      const celda = document.createElement("td");
+      celda.textContent = valor;
+      fila.appendChild(celda);
+    });
+
+    filas.appendChild(fila);
+  });
+}
+
 async function revisarSesion() {
-  const {data, error} = await cliente.auth.getSession();
-  pantalla.style.display =
-    (!error && data.session) ? "none" : "flex";
+  const { data, error } = await cliente.auth.getSession();
+
+  if (!error && data.session) {
+    pantalla.style.display = "none";
+    await cargarVolquetas();
+  } else {
+    pantalla.style.display = "flex";
+  }
 }
 
 document.getElementById("login-form").addEventListener("submit", async (e) => {
@@ -275,11 +323,8 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   } else {
     mensaje.textContent = "";
     pantalla.style.display = "none";
+    await cargarVolquetas();
   }
 });
 
 revisarSesion();
-
-</script>
-</body>
-</html>
