@@ -1,330 +1,124 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EXCAVACIONES CORTES SAS</title>
-<style>
-:root {
-  --navy:#142b45;
-  --blue:#1d4266;
-  --orange:#ed9b25;
-  --bg:#f2f5f8;
-  --white:#fff;
-  --text:#243447;
-  --muted:#718096;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
-.sidebar{
- position:fixed;left:0;top:0;bottom:0;width:245px;
- background:var(--navy);color:white;padding:25px 15px;
-}
-.brand{font-size:19px;font-weight:bold;line-height:1.5;padding:5px 10px 25px}
-.brand span{color:var(--orange)}
-.menu-title{font-size:11px;color:#9eb0c4;margin:18px 10px 8px}
-.menu button{
- display:block;width:100%;padding:12px 13px;margin:4px 0;
- border:0;border-radius:7px;background:transparent;color:#e4edf5;
- text-align:left;font-size:14px;cursor:pointer
-}
-.menu button:hover,.menu button.active{background:var(--blue);color:white}
-.menu button.active{border-left:4px solid var(--orange)}
-main{margin-left:245px;padding:30px;max-width:1500px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:28px}
-h1{font-size:25px;margin:0 0 7px}
-.subtitle{color:var(--muted);font-size:13px}
-.admin{background:white;padding:10px 15px;border-radius:9px;font-size:13px}
-.welcome{background:linear-gradient(110deg,#173653,#285a7e);color:white;padding:27px;border-radius:13px;margin-bottom:24px}
-.welcome h2{margin:0 0 9px;font-size:22px}
-.welcome p{margin:0;color:#dce8f1;font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:24px}
-.card{background:white;border-radius:11px;padding:19px;box-shadow:0 2px 8px #152b4510}
-.card small{color:var(--muted);font-size:12px}
-.number{font-size:27px;font-weight:bold;margin-top:12px}
-.orange{color:var(--orange)}
-.section{background:white;padding:22px;border-radius:11px;margin-bottom:20px}
-.section h3{margin:0 0 17px;font-size:17px}
-table{border-collapse:collapse;width:100%;font-size:13px}
-th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #e9eef2}
-th{color:var(--muted);font-weight:600;background:#f8fafc}
-.status{color:#a36b12;background:#fff3d9;padding:5px 9px;border-radius:15px;font-size:11px}
-.page{display:none}
-.page.active{display:block}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-.actions button,.primary{
- background:var(--orange);border:0;padding:11px 16px;border-radius:7px;
- color:#172b40;font-weight:bold;cursor:pointer
-}
-.notice{background:#fff7e8;padding:13px;border-radius:8px;color:#805d24;font-size:13px}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
-@media(max-width:900px){
- .sidebar{position:relative;width:100%;height:auto;padding:15px}
- .brand{padding-bottom:10px}
- .menu{display:flex;overflow-x:auto;gap:5px}
- .menu-title{display:none}
- .menu button{min-width:max-content;width:auto}
- main{margin:0;padding:18px}
- .grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:480px){.grid{grid-template-columns:1fr 1fr}.top{align-items:flex-start}}
-</style>
-</head>
-<body>
-<aside class="sidebar">
- <div class="brand">EXCAVACIONES<br><span>CORTES SAS</span></div>
- <div class="menu-title">MENÚ PRINCIPAL</div>
- <nav class="menu">
-  <button class="active" onclick="showPage('inicio',this)">▦　Inicio</button>
-  <button onclick="showPage('volquetas',this)">🚛　Volquetas</button>
-  <button onclick="showPage('combustible',this)">⛽　Combustible</button>
-  <button onclick="showPage('maquinaria',this)">🏗️　Maquinaria</button>
-  <button onclick="showPage('mantenimiento',this)">🔧　Mantenimiento</button>
-  <button onclick="showPage('trabajadores',this)">👷　Trabajadores</button>
-  <button onclick="showPage('proyectos',this)">📁　Proyectos y obras</button>
- </nav>
- <div class="menu-title">GESTIÓN EMPRESARIAL</div>
- <nav class="menu">
-  <button onclick="showPage('informes',this)">📊　Informes</button>
- </nav>
-</aside>
-
-<main>
- <div class="top">
-  <div><h1 id="pageTitle">Panel principal</h1>
-  <div class="subtitle">Sistema de gestión empresarial</div></div>
-  <div class="admin">👤 Administrador</div>
- </div>
-
- <section id="inicio" class="page active">
-  <div class="welcome">
-   <h2>Bienvenido a EXCAVACIONES CORTES SAS</h2>
-   <p>Control centralizado de flota, maquinaria, operaciones y proyectos.</p>
-  </div>
-  <div class="grid">
-   <div class="card"><small>VOLQUETAS REGISTRADAS</small><div class="number">15</div></div>
-   <div class="card"><small>MAQUINARIA</small><div class="number">—</div></div>
-   <div class="card"><small>TRABAJADORES</small><div class="number">—</div></div>
-   <div class="card"><small>PROYECTOS ACTIVOS</small><div class="number">—</div></div>
-  </div>
-  <div class="section">
-   <h3>Estado de la plataforma</h3>
-   <p class="notice">La interfaz inicial está creada. Los módulos se conectarán a la base de datos en los siguientes pasos.</p>
-  </div>
-  <div class="section">
-   <h3>Accesos rápidos</h3>
-   <div class="actions">
-    <button onclick="showPage('volquetas')">Ver volquetas</button>
-    <button onclick="showPage('combustible')">Control de combustible</button>
-    <button onclick="showPage('mantenimiento')">Mantenimientos</button>
-   </div>
-  </div>
- </section>
-
-<section id="volquetas" class="page">
-  <div class="section">
-    <h3>🚛 Gestión de volquetas</h3>
-    <p>Flota de 15 volquetas de Excavaciones Cortes SAS.</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>CÓDIGO</th>
-          <th>PLACA</th>
-          <th>MARCA</th>
-          <th>ESTADO</th>
-        </tr>
-      </thead>
-      <tbody id="truckRows">
-        <tr><td colspan="4">Cargando volquetas...</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
- <section id="combustible" class="page">
-  <div class="section"><h3>⛽ Control de combustible</h3>
-   <p>Registro de tanqueos, galones, kilometraje, costos y consumo por volqueta.</p>
-   <div class="notice">El formulario de registro se habilitará al conectar la base de datos.</div>
-  </div>
- </section>
-
- <section id="maquinaria" class="page">
-  <div class="section"><h3>🏗️ Maquinaria amarilla</h3>
-   <p>Inventario, horómetros, operación y consumo de maquinaria.</p>
-   <div class="notice">Módulo pendiente de conexión.</div>
-  </div>
- </section>
-
- <section id="mantenimiento" class="page">
-  <div class="section"><h3>🔧 Mantenimiento</h3>
-   <p>Control de mantenimientos preventivos y correctivos, costos y próximos servicios.</p>
-   <div class="notice">Módulo pendiente de conexión.</div>
-  </div>
- </section>
-
- <section id="trabajadores" class="page">
-  <div class="section"><h3>👷 Gestión de trabajadores</h3>
-   <p>Personal, cargos, conductores y documentación laboral.</p>
-   <div class="notice">Módulo pendiente de conexión. Los documentos personales tendrán acceso restringido.</div>
-  </div>
- </section>
-
- <section id="proyectos" class="page">
-  <div class="section"><h3>📁 Obras y proyectos</h3>
-   <p>Clientes, ubicaciones, contratos, fechas y seguimiento de obras.</p>
-   <div class="notice">Módulo pendiente de conexión.</div>
-  </div>
- </section>
-
- <section id="informes" class="page">
-  <div class="section"><h3>📊 Informes empresariales</h3>
-   <p>Indicadores de combustible, costos, mantenimiento y operación.</p>
-   <div class="notice">Los informes se habilitarán cuando tengamos datos registrados.</div>
-  </div>
- </section>
- <footer>EXCAVACIONES CORTES SAS · Plataforma de gestión empresarial</footer>
-</main>
-<script>
-function showPage(id,button){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- document.getElementById(id).classList.add('active');
- document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
- if(button) button.classList.add('active');
- document.getElementById('pageTitle').textContent=
- ({inicio:'Panel principal',volquetas:'Gestión de volquetas',combustible:'Control de combustible',
- maquinaria:'Maquinaria amarilla',mantenimiento:'Mantenimiento',trabajadores:'Trabajadores',
- proyectos:'Obras y proyectos',informes:'Informes empresariales'})[id];
-}
-const rows=document.getElementById('truckRows');
-for(let i=1;i<=15;i++){
- const code='V-'+String(i).padStart(2,'0');
- rows.innerHTML+=`<tr><td><b>${code}</b></td><td>Por registrar</td><td>Por registrar</td><td><span class="status">Pendiente</span></td></tr>`;
-}
-</script>
-
-<!-- ACCESO PRIVADO DEL ADMINISTRADOR -->
-<style>
-#login-screen {
-  position:fixed;
-  inset:0;
-  z-index:99999;
-  background:#142b45;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:Arial,sans-serif;
-}
-#login-box {
-  background:white;
-  padding:30px;
-  border-radius:12px;
-  width: min(360px, 90%);
-  text-align:center;
-}
-#login-box input, #login-box button {
-  width:100%;
-  box-sizing:border-box;
-  padding:12px;
-  margin:8px 0;
-  border-radius:7px;
-}
-#login-box input {border:1px solid #ccc;}
-#login-box button {
-  background:#ed9b25;
-  border:0;
-  font-weight:bold;
-  cursor:pointer;
-}
-#login-error {color:#b00020;font-size:13px;}
-</style>
-
-<div id="login-screen">
-  <div id="login-box">
-    <h2>EXCAVACIONES CORTES SAS</h2>
-    <p>Acceso del administrador</p>
-    <form id="login-form">
-      <input id="login-email" type="email"
-        placeholder="Correo electrónico" required>
-      <input id="login-password" type="password"
-        placeholder="Contraseña" required>
-      <button type="submit">Ingresar</button>
-    </form>
-    <p id="login-error"></p>
-  </div>
-</div>
-
+<!-- Cargar librería de Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+// 1. Configuración de Supabase
 const SUPABASE_URL = "https://xxtuyymnwgkqdwcqqkeg.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4dHV5eW1ud2drcWR3Y3Fxa2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM5ODM5MjYsImV4cCI6MjEwOTU1OTkyNn0.4DkEf2wJbtKJRA80oXK1dBVgEjSDNomhOkL_gZE-QHA";
 
-const cliente = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+const cliente = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const pantalla = document.getElementById("login-screen");
 const mensaje = document.getElementById("login-error");
+const loginForm = document.getElementById("login-form");
 
-async function cargarVolquetas() {
-  const filas = document.getElementById("truckRows");
+// 2. Función para mostrar secciones
+function showPage(id, button) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const targetPage = document.getElementById(id);
+  if (targetPage) targetPage.classList.add('active');
 
-  filas.innerHTML = '<tr><td colspan="4">Cargando...</td></tr>';
+  document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
+  if (button) button.classList.add('active');
 
-  const { data, error } = await cliente
-    .from("volquetas")
-    .select("codigo, placa, marca, estado")
-    .order("codigo");
-
-  if (error) {
-    filas.innerHTML = '<tr><td colspan="4">Error al cargar volquetas</td></tr>';
-    console.error(error);
-    return;
-  }
-
-  filas.innerHTML = "";
-
-  data.forEach(v => {
-    const fila = document.createElement("tr");
-
-    [v.codigo, v.placa || "-", v.marca || "-", v.estado || "-"].forEach(valor => {
-      const celda = document.createElement("td");
-      celda.textContent = valor;
-      fila.appendChild(celda);
-    });
-
-    filas.appendChild(fila);
-  });
+  const titles = {
+    inicio: 'Panel principal',
+    volquetas: 'Gestión de volquetas',
+    combustible: 'Control de combustible',
+    maquinaria: 'Maquinaria amarilla',
+    mantenimiento: 'Mantenimiento',
+    trabajadores: 'Trabajadores',
+    proyectos: 'Obras y proyectos',
+    informes: 'Informes empresariales'
+  };
+  document.getElementById('pageTitle').textContent = titles[id] || 'Panel principal';
 }
 
-async function revisarSesion() {
-  const { data, error } = await cliente.auth.getSession();
+// 3. Cargar volquetas desde Supabase
+async function cargarVolquetas() {
+  const filas = document.getElementById("truckRows");
+  if (!filas) return;
 
-  if (!error && data.session) {
-    pantalla.style.display = "none";
-    await cargarVolquetas();
-  } else {
+  filas.innerHTML = '<tr><td colspan="4">Cargando datos de la flota...</td></tr>';
+
+  try {
+    const { data, error } = await cliente
+      .from("volquetas")
+      .select("codigo, placa, marca, estado")
+      .order("codigo");
+
+    if (error) throw error;
+
+    filas.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      filas.innerHTML = '<tr><td colspan="4">No hay volquetas registradas aún en la base de datos.</td></tr>';
+      return;
+    }
+
+    data.forEach(v => {
+      const fila = document.createElement("tr");
+
+      const badgeState = `<span class="status">${v.estado || 'Sin estado'}</span>`;
+
+      fila.innerHTML = `
+        <td><b>${v.codigo || '-'}</b></td>
+        <td>${v.placa || '-'}</td>
+        <td>${v.marca || '-'}</td>
+        <td>${badgeState}</td>
+      `;
+      filas.appendChild(fila);
+    });
+  } catch (err) {
+    console.error("Error Supabase:", err);
+    filas.innerHTML = `<tr><td colspan="4" style="color:red;">Error al cargar volquetas: ${err.message}</td></tr>`;
+  }
+}
+
+// 4. Iniciar sesión
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  mensaje.style.color = "#ed9b25";
+  mensaje.textContent = "Verificando acceso...";
+
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value;
+
+  try {
+    const { data, error } = await cliente.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+    if (error) {
+      mensaje.style.color = "#b00020";
+      mensaje.textContent = "Error de acceso: " + error.message;
+    } else {
+      mensaje.textContent = "";
+      pantalla.style.display = "none";
+      await cargarVolquetas();
+    }
+  } catch (err) {
+    mensaje.style.color = "#b00020";
+    mensaje.textContent = "Error inesperado de conexión.";
+  }
+});
+
+// 5. Verificar sesión activa al entrar
+async function revisarSesion() {
+  try {
+    const { data, error } = await cliente.auth.getSession();
+    if (!error && data?.session) {
+      pantalla.style.display = "none";
+      await cargarVolquetas();
+    } else {
+      pantalla.style.display = "flex";
+    }
+  } catch (err) {
     pantalla.style.display = "flex";
   }
 }
 
-document.getElementById("login-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  mensaje.textContent = "Verificando acceso...";
-
-  const { error } = await cliente.auth.signInWithPassword({
-    email: document.getElementById("login-email").value.trim(),
-    password: document.getElementById("login-password").value
-  });
-
-  if (error) {
-    mensaje.textContent = "Error: " + error.message;
-  } else {
-    mensaje.textContent = "";
-    pantalla.style.display = "none";
-    await cargarVolquetas();
-  }
-});
-
+// Ejecutar verificación inicial
 revisarSesion();
+</script>
