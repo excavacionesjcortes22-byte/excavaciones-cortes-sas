@@ -1,237 +1,1291 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EXCAVACIONES CORTES SAS</title>
-<style>
-:root{--navy:#142b45;--blue:#1d4266;--orange:#ed9b25;--bg:#f2f5f8;--white:#fff;--text:#243447;--muted:#718096}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:245px;background:var(--navy);color:white;padding:25px 15px}
-.brand{font-size:19px;font-weight:bold;line-height:1.5;padding:5px 10px 25px}.brand span{color:var(--orange)}
-.menu-title{font-size:11px;color:#9eb0c4;margin:18px 10px 8px}
-.menu button{display:block;width:100%;padding:12px 13px;margin:4px 0;border:0;border-radius:7px;background:transparent;color:#e4edf5;text-align:left;font-size:14px;cursor:pointer}
-.menu button:hover,.menu button.active{background:var(--blue);color:white}.menu button.active{border-left:4px solid var(--orange)}
-main{margin-left:245px;padding:30px;max-width:1500px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:28px}
-h1{font-size:25px;margin:0 0 7px}.subtitle{color:var(--muted);font-size:13px}
-.admin{display:flex;align-items:center;gap:12px;background:white;padding:10px 15px;border-radius:9px;font-size:13px}
-.welcome{background:linear-gradient(110deg,#173653,#285a7e);color:white;padding:27px;border-radius:13px;margin-bottom:24px}
-.welcome h2{margin:0 0 9px;font-size:22px}.welcome p{margin:0;color:#dce8f1;font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:24px}
-.card,.section{background:white;border-radius:11px;padding:19px;box-shadow:0 2px 8px #152b4510}
-.card small{color:var(--muted);font-size:12px}.number{font-size:27px;font-weight:bold;margin-top:12px}
-.section{padding:22px;margin-bottom:20px}.section h3{margin:0 0 17px;font-size:17px}
-table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #e9eef2}
-th{color:var(--muted);font-weight:600;background:#f8fafc}.status{color:#17643b;background:#e4f5e9;padding:5px 9px;border-radius:15px;font-size:11px}
-.page{display:none}.page.active{display:block}
-.notice{background:#fff7e8;padding:13px;border-radius:8px;color:#805d24;font-size:13px}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
-.primary,.logout{border:0;padding:10px 14px;border-radius:7px;font-weight:bold;cursor:pointer}
-.primary{background:var(--orange);color:#172b40}.logout{background:#edf1f5;color:#243447}
-#login-screen{position:fixed;inset:0;z-index:99999;background:#142b45;display:flex;align-items:center;justify-content:center;padding:18px}
-#login-box{background:white;padding:30px;border-radius:12px;width:min(380px,100%);text-align:center;box-shadow:0 12px 40px #0003}
-#login-box h2{font-size:21px;margin-top:0}#login-box p{color:#596b7d;font-size:14px}
-#login-box input,#login-box button{width:100%;box-sizing:border-box;padding:12px;margin:8px 0;border-radius:7px}
-#login-box input{border:1px solid #ccc}#login-box button{background:#ed9b25;border:0;font-weight:bold;cursor:pointer}
-#login-error{color:#b00020!important;font-size:13px;min-height:18px}
-@media(max-width:900px){.sidebar{position:relative;width:100%;height:auto;padding:15px}.brand{padding-bottom:10px}.menu{display:flex;overflow-x:auto;gap:5px}.menu-title{display:none}.menu button{min-width:max-content;width:auto}main{margin:0;padding:18px}.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.grid{grid-template-columns:1fr 1fr}.top{align-items:flex-start;flex-direction:column}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Maquinaria, Volquetas y Obras</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-<div id="login-screen">
-  <div id="login-box">
-    <h2>EXCAVACIONES CORTES SAS</h2>
-    <p>Acceso privado del administrador</p>
-    <form id="login-form">
-      <input id="login-email" type="email" placeholder="Correo electrónico" autocomplete="username" required>
-      <input id="login-password" type="password" placeholder="Contraseña" autocomplete="current-password" required>
-      <button id="login-button" type="submit">Ingresar</button>
-    </form>
-    <p id="login-error" role="status" aria-live="polite"></p>
-  </div>
-</div>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
 
-<aside class="sidebar">
-  <div class="brand">EXCAVACIONES<br><span>CORTES SAS</span></div>
-  <div class="menu-title">MENÚ PRINCIPAL</div>
-  <nav class="menu">
-    <button class="active" onclick="showPage('inicio',this)">▦　Inicio</button>
-    <button onclick="showPage('volquetas',this)">🚛　Volquetas</button>
-    <button onclick="showPage('combustible',this)">⛽　Combustible</button>
-    <button onclick="showPage('maquinaria',this)">🏗️　Maquinaria</button>
-    <button onclick="showPage('mantenimiento',this)">🔧　Mantenimiento</button>
-    <button onclick="showPage('trabajadores',this)">👷　Trabajadores</button>
-    <button onclick="showPage('proyectos',this)">📁　Proyectos y obras</button>
-  </nav>
-  <div class="menu-title">GESTIÓN EMPRESARIAL</div>
-  <nav class="menu"><button onclick="showPage('informes',this)">📊　Informes</button></nav>
-</aside>
-
-<main>
-  <div class="top">
-    <div><h1 id="pageTitle">Panel principal</h1><div class="subtitle">Sistema de gestión empresarial</div></div>
-    <div class="admin"><span>👤 Administrador</span><button class="logout" id="logout-button" type="button">Salir</button></div>
+  <!-- PANTALLA DE LOGIN -->
+  <div id="login-screen" class="fixed inset-0 bg-slate-900 flex justify-center items-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-8 space-y-6 text-center">
+      <div class="bg-amber-500 w-16 h-16 rounded-2xl mx-auto flex items-center justify-center text-slate-900 text-3xl font-bold shadow-lg">
+        <i class="fa-solid fa-truck-monster"></i>
+      </div>
+      <div>
+        <h2 class="text-xl font-black text-slate-900">Maquinaria, Volquetas &amp; Obras</h2>
+        <p class="text-xs text-amber-600 font-bold mt-1">Administrador: PEDRO ALEJANDRO CORTES</p>
+      </div>
+      <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Contraseña de Acceso</label>
+          <input type="password" id="login-password" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="Ingresa tu contraseña">
+          <p id="login-error" class="text-xs text-rose-500 font-semibold mt-1 hidden">Contraseña incorrecta. (Prueba con: 1234)</p>
+        </div>
+        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-2.5 rounded-lg text-sm shadow transition">
+          Ingresar al Sistema
+        </button>
+      </form>
+      <p class="text-[10px] text-slate-400">Contraseña por defecto: <b>1234</b></p>
+    </div>
   </div>
 
-  <section id="inicio" class="page active">
-    <div class="welcome"><h2>Bienvenido a EXCAVACIONES CORTES SAS</h2><p>Control centralizado de flota, maquinaria, operaciones y proyectos.</p></div>
-    <div class="grid">
-      <div class="card"><small>VOLQUETAS REGISTRADAS</small><div class="number">15</div></div>
-      <div class="card"><small>MAQUINARIA</small><div class="number">—</div></div>
-      <div class="card"><small>TRABAJADORES</small><div class="number">—</div></div>
-      <div class="card"><small>PROYECTOS ACTIVOS</small><div class="number">—</div></div>
+  <!-- APLICACIÓN PRINCIPAL (Oculta hasta iniciar sesión) -->
+  <div id="app" class="flex flex-col min-h-screen hidden">
+    <!-- Navbar -->
+    <header class="bg-slate-900 text-white shadow-md">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center space-x-3">
+          <div class="bg-amber-500 p-2 rounded-lg text-slate-900 font-bold text-xl">
+            <i class="fa-solid fa-truck-monster"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-lg leading-tight">Maquinaria, Volquetas &amp; Obras</h1>
+            <p class="text-xs text-amber-400 font-semibold">Administrador: PEDRO ALEJANDRO CORTES</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <button onclick="exportAllCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-file-csv"></i> Exportar CSV
+          </button>
+          <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-print"></i> Reporte PDF
+          </button>
+          <button onclick="logout()" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 transition ml-2" title="Cerrar Sesión">
+            <i class="fa-solid fa-right-from-bracket"></i> Salir
+          </button>
+        </div>
+      </div>
+      
+      <!-- Nav Tabs -->
+      <nav class="bg-slate-800 border-t border-slate-700 px-4">
+        <div class="max-w-7xl mx-auto flex overflow-x-auto space-x-1 py-2" id="nav-tabs">
+          <button onclick="switchTab('dashboard')" class="tab-btn active bg-amber-500 text-slate-900 px-4 py-2 rounded-md font-bold text-sm flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-chart-line"></i> Dashboard
+          </button>
+          <button onclick="switchTab('equipos')" class="tab-btn text-slate-300 hover:bg-slate-700 px-4 py-2 rounded-md font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-truck-pickup"></i> Maquinaria y Volquetas
+          </button>
+          <button onclick="switchTab('obras')" class="tab-btn text-slate-300 hover:bg-slate-700 px-4 py-2 rounded-md font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-helmet-safety"></i> Control de Obras
+          </button>
+          <button onclick="switchTab('viajes')" class="tab-btn text-slate-300 hover:bg-slate-700 px-4 py-2 rounded-md font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-route"></i> Viajes y Acarreos
+          </button>
+          <button onclick="switchTab('combustible')" class="tab-btn text-slate-300 hover:bg-slate-700 px-4 py-2 rounded-md font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-gas-pump"></i> Combustible
+          </button>
+          <button onclick="switchTab('documentos')" class="tab-btn text-slate-300 hover:bg-slate-700 px-4 py-2 rounded-md font-semibold text-sm flex items-center gap-2 whitespace-nowrap">
+            <i class="fa-solid fa-folder-open"></i> Control Documental
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
+      <!-- Section Dashboard -->
+      <section id="sec-dashboard" class="space-y-6">
+        <!-- KPIs -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center text-slate-500 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider">Parque Automotor</span>
+              <i class="fa-solid fa-truck text-amber-500 text-lg"></i>
+            </div>
+            <div class="text-2xl font-black text-slate-800" id="kpi-flota">0</div>
+            <p class="text-xs text-slate-400 mt-1" id="kpi-flota-sub">0 Volquetas | 0 Maquinaria</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center text-slate-500 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider">Viajes del Mes</span>
+              <i class="fa-solid fa-route text-blue-500 text-lg"></i>
+            </div>
+            <div class="text-2xl font-black text-slate-800" id="kpi-viajes">0</div>
+            <p class="text-xs text-slate-400 mt-1" id="kpi-volumen">Volumen Total: 0 m³</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center text-slate-500 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider">Gasto Combustible</span>
+              <i class="fa-solid fa-gas-pump text-emerald-500 text-lg"></i>
+            </div>
+            <div class="text-2xl font-black text-slate-800" id="kpi-combustible">$0</div>
+            <p class="text-xs text-slate-400 mt-1" id="kpi-galones">0 Galones suministrados</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center text-slate-500 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider">Alertas Documentos</span>
+              <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i>
+            </div>
+            <div class="text-2xl font-black text-rose-600" id="kpi-alertas">0</div>
+            <p class="text-xs text-slate-400 mt-1" id="kpi-alertas-sub">Vencidos o por vencer</p>
+          </div>
+        </div>
+
+        <!-- Alert Banner -->
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm">
+          <div class="flex items-start gap-3">
+            <i class="fa-solid fa-bell text-amber-600 text-xl mt-0.5"></i>
+            <div class="flex-grow">
+              <h3 class="font-bold text-amber-900 text-sm">Resumen Inmediato de Alertas Documentales & Mantenimientos</h3>
+              <div class="mt-2 text-xs text-amber-800 space-y-1" id="dashboard-alerts-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="font-bold text-slate-700 text-sm mb-4">Combustible Consumido por Equipo (Gal)</h3>
+            <canvas id="chartCombustible" height="200"></canvas>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="font-bold text-slate-700 text-sm mb-4">Viajes Realizados por Obra</h3>
+            <canvas id="chartViajes" height="200"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Equipos -->
+      <section id="sec-equipos" class="hidden space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3">
+          <h2 class="text-lg font-bold text-slate-800">Inventario de Maquinaria y Volquetas</h2>
+          <button onclick="openModal('modal-equipo')" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 shadow-sm transition">
+            <i class="fa-solid fa-plus"></i> Registrar Equipo
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-slate-800 text-white text-xs font-semibold uppercase">
+                <tr>
+                  <th class="p-3">Código / Placa</th>
+                  <th class="p-3">Tipo</th>
+                  <th class="p-3">Marca / Modelo</th>
+                  <th class="p-3">Horómetro / Km</th>
+                  <th class="p-3">Obra Asignada</th>
+                  <th class="p-3">Estado</th>
+                  <th class="p-3 text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-equipos" class="text-xs divide-y divide-slate-200"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Obras -->
+      <section id="sec-obras" class="hidden space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3">
+          <h2 class="text-lg font-bold text-slate-800">Control de Obras y Frentes de Trabajo</h2>
+          <button onclick="openModal('modal-obra')" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 shadow-sm transition">
+            <i class="fa-solid fa-plus"></i> Nueva Obra
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="grid-obras"></div>
+      </section>
+
+      <!-- Section Viajes -->
+      <section id="sec-viajes" class="hidden space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3">
+          <h2 class="text-lg font-bold text-slate-800">Registro de Viajes y Acarreos</h2>
+          <button onclick="openModal('modal-viaje')" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 shadow-sm transition">
+            <i class="fa-solid fa-plus"></i> Registrar Viaje
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-slate-800 text-white text-xs font-semibold uppercase">
+                <tr>
+                  <th class="p-3">Fecha</th>
+                  <th class="p-3">Volqueta / Equipo</th>
+                  <th class="p-3">Obra Destino</th>
+                  <th class="p-3">Material</th>
+                  <th class="p-3">Volumen (m³)</th>
+                  <th class="p-3">Distancia (Km)</th>
+                  <th class="p-3">Costo Flete ($)</th>
+                  <th class="p-3 text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-viajes" class="text-xs divide-y divide-slate-200"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Combustible -->
+      <section id="sec-combustible" class="hidden space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3">
+          <h2 class="text-lg font-bold text-slate-800">Control de Combustible y Tanqueos</h2>
+          <button onclick="openModal('modal-combustible')" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 shadow-sm transition">
+            <i class="fa-solid fa-plus"></i> Registrar Tanqueo
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-slate-800 text-white text-xs font-semibold uppercase">
+                <tr>
+                  <th class="p-3">Fecha</th>
+                  <th class="p-3">Equipo</th>
+                  <th class="p-3">Tipo Combustible</th>
+                  <th class="p-3">Galones</th>
+                  <th class="p-3">Costo Total ($)</th>
+                  <th class="p-3">Horómetro / Km Actual</th>
+                  <th class="p-3">Estación / Erogador</th>
+                  <th class="p-3 text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-combustible" class="text-xs divide-y divide-slate-200"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Documentos -->
+      <section id="sec-documentos" class="hidden space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-3">
+          <h2 class="text-lg font-bold text-slate-800">Control Documental y Mantenimientos</h2>
+          <div class="flex gap-2">
+            <button onclick="resetDemoData()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded text-xs font-semibold">
+              Reset Demo
+            </button>
+          </div>
+        </div>
+
+        <!-- Sub Tabs -->
+        <div class="flex border-b border-slate-300 gap-4 text-sm font-bold">
+          <button onclick="switchDocTab('trabajadores')" id="doc-tab-trabajadores" class="pb-2 text-amber-600 border-b-2 border-amber-600">
+            <i class="fa-solid fa-users"></i> Trabajadores / Operadores
+          </button>
+          <button onclick="switchDocTab('volquetas')" id="doc-tab-volquetas" class="pb-2 text-slate-500 hover:text-slate-700">
+            <i class="fa-solid fa-truck"></i> Volquetas (SOAT, Tecno, PIN, Poliza, GPS)
+          </button>
+          <button onclick="switchDocTab('maquinaria')" id="doc-tab-maquinaria" class="pb-2 text-slate-500 hover:text-slate-700">
+            <i class="fa-solid fa-tractor"></i> Maquinaria (Insp. Técnica, Póliza, GPS, Service)
+          </button>
+        </div>
+
+        <!-- Doc Trabajadores -->
+        <div id="sub-doc-trabajadores" class="space-y-4">
+          <div class="flex justify-between items-center">
+            <p class="text-xs text-slate-500">Controles sanitarios, cursos de alturas, licencias de conducción e idoneidad laboral.</p>
+            <button onclick="openModal('modal-trabajador')" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1 shadow-sm">
+              <i class="fa-solid fa-user-plus"></i> Nuevo Trabajador
+            </button>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-800 text-white text-xs font-semibold uppercase">
+                  <tr>
+                    <th class="p-3">Nombre / Cargo</th>
+                    <th class="p-3">Examen Médico (IPS)</th>
+                    <th class="p-3">Curso Alturas</th>
+                    <th class="p-3">Licencia Conducción / Operador</th>
+                    <th class="p-3">Psicosensométrico</th>
+                    <th class="p-3 text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-trabajadores" class="text-xs divide-y divide-slate-200"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Doc Volquetas -->
+        <div id="sub-doc-volquetas" class="hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <p class="text-xs text-slate-500">Documentos legales para tránsito y planes de mantenimiento por kilometraje.</p>
+            <button onclick="openModal('modal-doc-volqueta')" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1 shadow-sm">
+              <i class="fa-solid fa-file-circle-plus"></i> Registrar Docs Volqueta
+            </button>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-800 text-white text-xs font-semibold uppercase">
+                  <tr>
+                    <th class="p-3">Volqueta / Placa</th>
+                    <th class="p-3">SOAT</th>
+                    <th class="p-3">Tecnicomecánica</th>
+                    <th class="p-3">PIN / Permiso</th>
+                    <th class="p-3">Póliza RCE / Todo Riesgo</th>
+                    <th class="p-3">GPS / Rastreamento</th>
+                    <th class="p-3">Mantenimiento Km</th>
+                    <th class="p-3 text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-doc-volquetas" class="text-xs divide-y divide-slate-200"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Doc Maquinaria -->
+        <div id="sub-doc-maquinaria" class="hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <p class="text-xs text-slate-500">Inspecciones técnico-operativas, pólizas, GPS y servicios por horómetro.</p>
+            <button onclick="openModal('modal-doc-maquinaria')" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1 shadow-sm">
+              <i class="fa-solid fa-file-circle-plus"></i> Registrar Docs Maquinaria
+            </button>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-800 text-white text-xs font-semibold uppercase">
+                  <tr>
+                    <th class="p-3">Maquinaria / Código</th>
+                    <th class="p-3">Insp. Técnico-Operativa</th>
+                    <th class="p-3">Póliza RCE / Equipos</th>
+                    <th class="p-3">GPS / Rastreamento</th>
+                    <th class="p-3">Mantenimiento Horómetro</th>
+                    <th class="p-3 text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-doc-maquinaria" class="text-xs divide-y divide-slate-200"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODALS -->
+  <!-- Modal Equipo -->
+  <div id="modal-equipo" class="fixed inset-0 bg-slate-900/60 flex justify-center items-center p-4 hidden z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
+      <h3 class="font-bold text-slate-800 text-base border-b pb-2">Registrar Maquinaria / Volqueta</h3>
+      <form id="form-equipo" onsubmit="saveEquipo(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Código / Placa</label>
+          <input type="text" id="eq-codigo" required class="w-full border border-slate-300 rounded p-2" placeholder="Ej: V-01 o CAT-320">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Tipo de Equipo</label>
+          <select id="eq-tipo" required class="w-full border border-slate-300 rounded p-2">
+            <option value="Volqueta">Volqueta</option>
+            <option value="Excavadora">Excavadora</option>
+            <option value="Bulldozer">Bulldozer</option>
+            <option value="Cargador">Cargador</option>
+            <option value="Retroexcavadora">Retroexcavadora</option>
+            <option value="Motoniveladora">Motoniveladora</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Marca</label>
+            <input type="text" id="eq-marca" required class="w-full border border-slate-300 rounded p-2" placeholder="Caterpillar, Kenworth">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Modelo</label>
+            <input type="text" id="eq-modelo" required class="w-full border border-slate-300 rounded p-2" placeholder="2022">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Horómetro / Km Actual</label>
+            <input type="number" id="eq-medicion" required class="w-full border border-slate-300 rounded p-2" placeholder="1250">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Obra Asignada</label>
+            <select id="eq-obra" class="w-full border border-slate-300 rounded p-2"></select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onclick="closeModal('modal-equipo')" class="px-3 py-1.5 border rounded text-slate-600 font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded">Guardar</button>
+        </div>
+      </form>
     </div>
-    <div class="section"><h3>Estado de la plataforma</h3><p class="notice">Acceso protegido. Los módulos se conectarán progresivamente a la base de datos.</p></div>
-  </section>
+  </div>
 
-  <section id="volquetas" class="page">
-    <div class="section"><h3>🚛 Gestión de volquetas</h3><p>Flota de 15 volquetas de Excavaciones Cortes SAS.</p>
-      <table><thead><tr><th>CÓDIGO</th><th>PLACA</th><th>MARCA</th><th>ESTADO</th></tr></thead>
-      <tbody id="truckRows"><tr><td colspan="4">Inicia sesión para consultar la flota.</td></tr></tbody></table>
-      <p id="truck-message" class="notice">La información se consulta desde la base de datos protegida.</p>
+  <!-- Modal Obra -->
+  <div id="modal-obra" class="fixed inset-0 bg-slate-900/60 flex justify-center items-center p-4 hidden z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
+      <h3 class="font-bold text-slate-800 text-base border-b pb-2">Registrar Obra / Frente</h3>
+      <form id="form-obra" onsubmit="saveObra(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Nombre de la Obra</label>
+          <input type="text" id="ob-nombre" required class="w-full border border-slate-300 rounded p-2" placeholder="Vía Principal Sector Norte">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Ubicación / Tramo</label>
+          <input type="text" id="ob-ubicacion" required class="w-full border border-slate-300 rounded p-2" placeholder="KM 12 + 400">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Ingeniero / Encargado</label>
+          <input type="text" id="ob-encargado" required class="w-full border border-slate-300 rounded p-2" placeholder="Ing. Carlos Pérez">
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onclick="closeModal('modal-obra')" class="px-3 py-1.5 border rounded text-slate-600 font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded">Guardar</button>
+        </div>
+      </form>
     </div>
-  </section>
-  <section id="combustible" class="page"><div class="section"><h3>⛽ Control de combustible</h3><p>Registro de tanqueos, galones, kilometraje, costos y consumo por volqueta.</p><div class="notice">Módulo pendiente de conexión.</div></div></section>
-  <section id="maquinaria" class="page"><div class="section"><h3>🏗️ Maquinaria amarilla</h3><p>Inventario, horómetros, operación y consumo de maquinaria.</p><div class="notice">Módulo pendiente de conexión.</div></div></section>
-  <section id="mantenimiento" class="page"><div class="section"><h3>🔧 Mantenimiento</h3><p>Control de mantenimientos preventivos y correctivos, costos y próximos servicios.</p><div class="notice">Módulo pendiente de conexión.</div></div></section>
-  <section id="trabajadores" class="page"><div class="section"><h3>👷 Gestión de trabajadores</h3><p>Personal, cargos, conductores y documentación laboral.</p><div class="notice">Módulo pendiente de conexión.</div></div></section>
-  <section id="proyectos" class="page"><div class="section"><h3>📁 Obras y proyectos</h3><p>Clientes, ubicaciones, contratos, fechas y seguimiento de obras.</p><div class="notice">Módulo pendiente de conexión.</div></div></section>
-  <section id="informes" class="page"><div class="section"><h3>📊 Informes empresariales</h3><p>Indicadores de combustible, costos, mantenimiento y operación.</p><div class="notice">Los informes se habilitarán cuando tengamos datos registrados.</div></div></section>
-  <footer>EXCAVACIONES CORTES SAS · Plataforma de gestión empresarial</footer>
-</main>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-"use strict";
+  <!-- Modal Viaje -->
+  <div id="modal-viaje" class="fixed inset-0 bg-slate-900/60 flex justify-center items-center p-4 hidden z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
+      <h3 class="font-bold text-slate-800 text-base border-b pb-2">Registrar Viaje / Acarreo</h3>
+      <form id="form-viaje" onsubmit="saveViaje(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Volqueta / Equipo</label>
+          <select id="vj-equipo" required class="w-full border border-slate-300 rounded p-2"></select>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Obra Destino</label>
+          <select id="vj-obra" required class="w-full border border-slate-300 rounded p-2"></select>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Tipo de Material</label>
+          <select id="vj-material" required class="w-full border border-slate-300 rounded p-2">
+            <option value="Subbase Granular">Subbase Granular</option>
+            <option value="Triturado 3/4">Triturado 3/4</option>
+            <option value="Mezcla Asfáltica">Mezcla Asfáltica</option>
+            <option value="Arena de Peña">Arena de Peña</option>
+            <option value="Recebo Común">Recebo Común</option>
+            <option value="Material de Excavación">Material de Excavación</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Volumen (m³)</label>
+            <input type="number" step="0.1" id="vj-volumen" required class="w-full border border-slate-300 rounded p-2" placeholder="14">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Distancia (Km)</label>
+            <input type="number" id="vj-distancia" required class="w-full border border-slate-300 rounded p-2" placeholder="25">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Flete ($)</label>
+            <input type="number" id="vj-costo" required class="w-full border border-slate-300 rounded p-2" placeholder="180000">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onclick="closeModal('modal-viaje')" class="px-3 py-1.5 border rounded text-slate-600 font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded">Guardar Viaje</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-// La clave anon/publishable es pública por diseño. La seguridad de los datos
-// depende de las políticas RLS de Supabase, no de ocultar esta clave.
-const SUPABASE_URL = "https://xxtuyymnwgkqdwcqqkeg.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4dHV5eW1ud2drcWR3Y3Fxa2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM5ODM5MjYsImV4cCI6MjEwOTU1OTkyNn0.4DkEf2wJbtKJRA80oXK1dBVgEjSDNomhOkL_gZE-QHA";
+  <!-- Modal Combustible -->
+  <div id="modal-combustible" class="fixed inset-0 bg-slate-900/60 flex justify-center items-center p-4 hidden z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
+      <h3 class="font-bold text-slate-800 text-base border-b pb-2">Registrar Tanqueo de Combustible</h3>
+      <form id="form-combustible" onsubmit="saveCombustible(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Equipo / Maquinaria / Volqueta</label>
+          <select id="cb-equipo" required class="w-full border border-slate-300 rounded p-2"></select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Tipo Combustible</label>
+            <select id="cb-tipo" class="w-full border border-slate-300 rounded p-2">
+              <option value="Diesel / ACPM">Diesel / ACPM</option>
+              <option value="Gasolina Corriente">Gasolina Corriente</option>
+              <option value="Gasolina Extra">Gasolina Extra</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Galones</label>
+            <input type="number" step="0.1" id="cb-galones" required class="w-full border border-slate-300 rounded p-2" placeholder="45.5">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Costo Total ($)</label>
+            <input type="number" id="cb-costo" required class="w-full border border-slate-300 rounded p-2" placeholder="450000">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Horómetro / Km Actual</label>
+            <input type="number" id="cb-medicion" required class="w-full border border-slate-300 rounded p-2" placeholder="1340">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold mb-1">Estación de Servicio / Tanque EDC</label>
+          <input type="text" id="cb-estacion" required class="w-full border border-slate-300 rounded p-2" placeholder="EDS Primax Central / Tanque Obra 1">
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onclick="closeModal('modal-combustible')" class="px-3 py-1.5 border rounded text-slate-600 font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded">Guardar Tanqueo</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-const pantalla = document.getElementById("login-screen");
-const mensaje = document.getElementById("login-error");
-const loginForm = document.getElementById("login-form");
-const loginButton = document.getElementById("login-button");
-const filas = document.getElementById("truckRows");
-let cliente = null;
+  <!-- Modal Trabajador -->
+  <div id="modal-trabajador" class="fixed inset-0 bg-slate-900/60 flex justify-center items-center p-4 hidden z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <h3 class="font-bold text-slate-800 text-base border-b pb-2">Registrar Control Documental de Trabajador</h3>
+      <form id="form-trabajador" onsubmit="saveTrabajador(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block font-semibold mb-1">Nombre Completo</label>
+            <input type="text" id="tr-nombre" required class="w-full border rounded p-2" placeholder="Juan Carlos Rodríguez">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Cargo / Rol</label>
+            <input type="text" id="tr-cargo" required class="w-full border rounded p-2" placeholder="Operador Excavadora / Conductor">
+          </div>
+        </div>
 
-function showPage(id, button) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  const target = document.getElementById(id);
-  if (target) target.classList.add("active");
-  document.querySelectorAll(".menu button").forEach(b => b.classList.remove("active"));
-  if (button) button.classList.add("active");
-  const titles = {inicio:"Panel principal",volquetas:"Gestión de volquetas",combustible:"Control de combustible",maquinaria:"Maquinaria amarilla",mantenimiento:"Mantenimiento",trabajadores:"Trabajadores",proyectos:"Obras y proyectos",informes:"Informes empresariales"};
-  document.getElementById("pageTitle").textContent = titles[id] || "Panel principal";
-}
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">1. Examen Médico Ocupacional</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="tr-medico-entidad" placeholder="IPS Colcan / Colsubsidio" class="border rounded p-1.5">
+            <input type="date" id="tr-medico-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
 
-function mostrarError(texto) {
-  mensaje.textContent = texto;
-  mensaje.style.color = "#b00020";
-}
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">2. Curso de Alturas</p>
+          <div class="grid grid-cols-2 gap-2">
+            <select id="tr-alturas-nivel" class="border rounded p-1.5">
+              <option value="Avanzado / Reentrenamiento">Avanzado / Reentrenamiento</option>
+              <option value="Básico Operativo">Básico Operativo</option>
+              <option value="Coordinador Alturas">Coordinador Alturas</option>
+            </select>
+            <input type="date" id="tr-alturas-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
 
-async function cargarVolquetas() {
-  filas.innerHTML = '<tr><td colspan="4">Cargando volquetas...</td></tr>';
-  const { data, error } = await cliente.from("volquetas").select("codigo, placa, marca, estado").order("codigo");
-  if (error) {
-    console.error("Error al consultar volquetas:", error);
-    filas.innerHTML = '<tr><td colspan="4">No fue posible cargar la flota.</td></tr>';
-    document.getElementById("truck-message").textContent = "Revisa las políticas RLS y el acceso de la tabla volquetas en Supabase.";
-    return;
-  }
-  filas.innerHTML = "";
-  if (!data || data.length === 0) {
-    filas.innerHTML = '<tr><td colspan="4">No hay registros visibles para esta cuenta.</td></tr>';
-    return;
-  }
-  data.forEach(v => {
-    const tr = document.createElement("tr");
-    [v.codigo || "-", v.placa || "-", v.marca || "-", v.estado || "-"].forEach((value, index) => {
-      const td = document.createElement("td");
-      if (index === 0) {
-        const b = document.createElement("b");
-        b.textContent = value;
-        td.appendChild(b);
-      } else if (index === 3) {
-        const span = document.createElement("span");
-        span.className = "status";
-        span.textContent = value;
-        td.appendChild(span);
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">3. Licencia de Conducción / Certificado Operador</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="tr-licencia-cat" placeholder="Cat C2 / Certificado SENA" class="border rounded p-1.5">
+            <input type="date" id="tr-licencia-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">4. Examen Psicosensométrico</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="tr-psico-centro" placeholder="CRC Certiva / San Mateo" class="border rounded p-1.5">
+            <input type="date" id="tr-psico-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onclick="closeModal('modal-trabajador')" class="px-3 py-1.5 border rounded text-slate-600 font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded">Guardar Registro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Volqueta Documentos -->
+  <div id="modal-doc-volqueta" class="fixed inset-0 bg-slate-900/60 flex justify-center items-center p-4 hidden z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <h3 class="font-bold text-slate-800 text-base border-b pb-2">Vigencias & Mantenimiento Volqueta</h3>
+      <form id="form-doc-volqueta" onsubmit="saveDocVolqueta(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Seleccionar Volqueta</label>
+          <select id="dv-equipo" required class="w-full border rounded p-2"></select>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">1. SOAT</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="dv-soat-aseguradora" placeholder="Aseguradora (Sura/Seguros Estado)" class="border rounded p-1.5">
+            <input type="date" id="dv-soat-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">2. Revisión Tecnicomecánica</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="dv-tecno-cda" placeholder="CDA Nombre / Certificado #" class="border rounded p-1.5">
+            <input type="date" id="dv-tecno-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">3. Permiso PIN / Certificado Circulación</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="dv-pin-num" placeholder="# Permiso / Entidad" class="border rounded p-1.5">
+            <input type="date" id="dv-pin-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">4. Póliza Todo Riesgo / RCE</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="dv-poliza-num" placeholder="Póliza # / AXA Colpatria" class="border rounded p-1.5">
+            <input type="date" id="dv-poliza-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">5. Rastreamento GPS</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="dv-gps-proveedor" placeholder="Proveedor / IMEI" class="border rounded p-1.5">
+            <input type="date" id="dv-gps-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">6. Mantenimiento Preventivo (Km)</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="number" id="dv-mant-ultimo" placeholder="Último Mantenimiento (Km)" class="border rounded p-1.5">
+            <input type="number" id="dv-mant-proximo" placeholder="Próximo Service (Km)" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onclick="closeModal('modal-doc-volqueta')" class="px-3 py-1.5 border rounded text-slate-600 font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded">Guardar Vigencias</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Maquinaria Documentos -->
+  <div id="modal-doc-maquinaria" class="fixed inset-0 bg-slate-900/60 flex justify-center items-center p-4 hidden z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <h3 class="font-bold text-slate-800 text-base border-b pb-2">Vigencias & Mantenimiento Maquinaria</h3>
+      <form id="form-doc-maquinaria" onsubmit="saveDocMaquinaria(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold mb-1">Seleccionar Maquinaria</label>
+          <select id="dm-equipo" required class="w-full border rounded p-2"></select>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">1. Inspección Técnico-Operativa</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="dm-insp-entidad" placeholder="Entidad Certificadora / Inspector" class="border rounded p-1.5">
+            <input type="date" id="dm-insp-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">2. Póliza RCE / Equipos y Maquinaria</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="dm-poliza-num" placeholder="Póliza # / Liberty Seguros" class="border rounded p-1.5">
+            <input type="date" id="dm-poliza-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">3. Rastreamento GPS / Telemetría</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="text" id="dm-gps-proveedor" placeholder="Proveedor / Geotab / Tracklink" class="border rounded p-1.5">
+            <input type="date" id="dm-gps-fecha" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border rounded space-y-2">
+          <p class="font-bold text-slate-700">4. Plan de Mantenimiento (Horómetro)</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="number" id="dm-mant-ultimo" placeholder="Último Cambio Aceite (Horas)" class="border rounded p-1.5">
+            <input type="number" id="dm-mant-proximo" placeholder="Próximo Service (Horas)" required class="border rounded p-1.5">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onclick="closeModal('modal-doc-maquinaria')" class="px-3 py-1.5 border rounded text-slate-600 font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded">Guardar Vigencias</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // LOGIN AUTH LOGIC
+    const ADMIN_PASSWORD = "1234";
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const pass = document.getElementById('login-password').value;
+      if (pass === ADMIN_PASSWORD) {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+        sessionStorage.setItem('isLoggedIn', 'true');
+        render();
       } else {
-        td.textContent = value;
+        document.getElementById('login-error').classList.remove('hidden');
       }
-      tr.appendChild(td);
-    });
-    filas.appendChild(tr);
-  });
-}
-
-async function revisarSesion() {
-  const { data, error } = await cliente.auth.getSession();
-  if (error) {
-    pantalla.style.display = "flex";
-    mostrarError("No se pudo verificar la sesión. Intenta ingresar nuevamente.");
-    return;
-  }
-  if (data.session) {
-    pantalla.style.display = "none";
-    await cargarVolquetas();
-  } else {
-    pantalla.style.display = "flex";
-  }
-}
-
-loginForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  mensaje.textContent = "Verificando acceso...";
-  loginButton.disabled = true;
-  loginButton.textContent = "Ingresando...";
-  try {
-    const { error } = await cliente.auth.signInWithPassword({
-      email: document.getElementById("login-email").value.trim(),
-      password: document.getElementById("login-password").value
-    });
-    if (error) {
-      mostrarError("No se pudo ingresar. Verifica el correo y la contraseña.");
-      console.error("Error de autenticación:", error.message);
-    } else {
-      mensaje.textContent = "";
-      pantalla.style.display = "none";
-      await cargarVolquetas();
     }
-  } catch (error) {
-    console.error(error);
-    mostrarError("Error de conexión. Recarga la página e inténtalo de nuevo.");
-  } finally {
-    loginButton.disabled = false;
-    loginButton.textContent = "Ingresar";
-  }
-});
 
-document.getElementById("logout-button").addEventListener("click", async () => {
-  await cliente.auth.signOut();
-  pantalla.style.display = "flex";
-  document.getElementById("login-password").value = "";
-  mensaje.textContent = "";
-});
+    function logout() {
+      sessionStorage.removeItem('isLoggedIn');
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('login-password').value = '';
+    }
 
-(async function iniciar() {
-  if (!window.supabase || !window.supabase.createClient) {
-    mostrarError("No se pudo cargar el servicio de acceso. Revisa tu conexión a internet.");
-    return;
-  }
-  try {
-    cliente = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    await revisarSesion();
-  } catch (error) {
-    console.error(error);
-    mostrarError("La configuración de conexión necesita revisión.");
-  }
-})();
-</script>
+    // State Store
+    const DEFAULT_DATA = {
+      equipos: [
+        { id: 1, codigo: 'VOL-01', tipo: 'Volqueta', marca: 'Kenworth', modelo: '2021', medicion: 85400, obra: 'Variante Norte - Tramo 1' },
+        { id: 2, codigo: 'CAT-320', tipo: 'Excavadora', marca: 'Caterpillar', modelo: '2020', medicion: 3450, obra: 'Variante Norte - Tramo 1' },
+        { id: 3, codigo: 'RET-05', tipo: 'Retroexcavadora', marca: 'JCB 3CX', modelo: '2019', medicion: 5120, obra: 'Cimentación Puente Central' }
+      ],
+      obras: [
+        { id: 1, nombre: 'Variante Norte - Tramo 1', ubicacion: 'KM 14+500', encargado: 'Ing. Roberto Gómez' },
+        { id: 2, nombre: 'Cimentación Puente Central', ubicacion: 'Sector Río Claro', encargado: 'Ing. Maria Fernanda' }
+      ],
+      viajes: [
+        { id: 1, fecha: '2026-11-01', equipo: 'VOL-01', obra: 'Variante Norte - Tramo 1', material: 'Subbase Granular', volumen: 14, distancia: 28, costo: 210000 },
+        { id: 2, fecha: '2026-11-02', equipo: 'VOL-01', obra: 'Variante Norte - Tramo 1', material: 'Triturado 3/4', volumen: 15, distancia: 28, costo: 225000 }
+      ],
+      combustible: [
+        { id: 1, fecha: '2026-11-03', equipo: 'VOL-01', tipo: 'Diesel / ACPM', galones: 45, costo: 450000, medicion: 85200, estacion: 'EDS Mobil Norte' },
+        { id: 2, fecha: '2026-11-04', equipo: 'CAT-320', tipo: 'Diesel / ACPM', galones: 60, costo: 600000, medicion: 3410, estacion: 'Tanque Directo Obra' }
+      ],
+      trabajadores: [
+        {
+          id: 1,
+          nombre: 'Juan Pérez Trujillo',
+          cargo: 'Operador de Excavadora',
+          medico: { entidad: 'IPS SaludOcupacional', fecha: '2026-11-20' },
+          alturas: { nivel: 'Avanzado', fecha: '2026-12-15' },
+          licencia: { cat: 'Certificado SENA / Cat C2', fecha: '2027-05-10' },
+          psico: { centro: 'CRC Certiva', fecha: '2026-10-15' }
+        },
+        {
+          id: 2,
+          nombre: 'Carlos Mario Benítez',
+          cargo: 'Conductor Volqueta Dobletroque',
+          medico: { entidad: 'Colcan Ocupacional', fecha: '2026-11-05' },
+          alturas: { nivel: 'Básico', fecha: '2026-11-02' },
+          licencia: { cat: 'Licencia Cat C3', fecha: '2027-01-20' },
+          psico: { centro: 'CRC San Mateo', fecha: '2026-11-12' }
+        }
+      ],
+      docVolquetas: [
+        {
+          id: 1,
+          equipo: 'VOL-01',
+          soat: { aseguradora: 'Seguros Sura', fecha: '2026-11-18' },
+          tecno: { cda: 'CDA Movilidad Total', fecha: '2026-12-05' },
+          pin: { num: 'PIN-98421', fecha: '2027-03-30' },
+          poliza: { num: 'POL-88741-AXA', fecha: '2026-11-28' },
+          gps: { prov: 'Tracklink - IMEI 8841', fecha: '2027-01-15' },
+          mant: { ultimo: 80000, proximo: 85500 }
+        }
+      ],
+      docMaquinaria: [
+        {
+          id: 1,
+          equipo: 'CAT-320',
+          insp: { entidad: 'Bureau Veritas', fecha: '2026-11-25' },
+          poliza: { num: 'POL-MAQ-1102', fecha: '2027-04-10' },
+          gps: { prov: 'Geotab Fleet', fecha: '2027-02-28' },
+          mant: { ultimo: 3200, proximo: 3460 }
+        }
+      ]
+    };
+
+    let state = JSON.parse(localStorage.getItem('maquinaria_obras_data')) || DEFAULT_DATA;
+
+    function saveState() {
+      localStorage.setItem('maquinaria_obras_data', JSON.stringify(state));
+      render();
+    }
+
+    function resetDemoData() {
+      state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      saveState();
+    }
+
+    let chartComb = null;
+    let chartViajes = null;
+
+    function switchTab(tabId) {
+      document.querySelectorAll('#nav-tabs .tab-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-amber-500', 'text-slate-900');
+        btn.classList.add('text-slate-300');
+      });
+      event.currentTarget.classList.add('active', 'bg-amber-500', 'text-slate-900');
+      event.currentTarget.classList.remove('text-slate-300');
+
+      ['dashboard', 'equipos', 'obras', 'viajes', 'combustible', 'documentos'].forEach(sec => {
+        document.getElementById(`sec-${sec}`).classList.add('hidden');
+      });
+      document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+    }
+
+    function switchDocTab(subTab) {
+      ['trabajadores', 'volquetas', 'maquinaria'].forEach(tab => {
+        document.getElementById(`sub-doc-${tab}`).classList.add('hidden');
+        document.getElementById(`doc-tab-${tab}`).classList.remove('text-amber-600', 'border-b-2', 'border-amber-600');
+        document.getElementById(`doc-tab-${tab}`).classList.add('text-slate-500');
+      });
+      document.getElementById(`sub-doc-${subTab}`).classList.remove('hidden');
+      document.getElementById(`doc-tab-${subTab}`).classList.add('text-amber-600', 'border-b-2', 'border-amber-600');
+    }
+
+    function getStatusBadge(dateStr) {
+      if (!dateStr) return '<span class="px-2 py-0.5 rounded text-[10px] bg-slate-100 text-slate-500">Sin Fecha</span>';
+      const today = new Date('2026-11-09');
+      const target = new Date(dateStr);
+      const diffTime = target - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 0) {
+        return `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700">Vencido (${Math.abs(diffDays)}d)</span>`;
+      } else if (diffDays <= 15) {
+        return `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Por Vencer (${diffDays}d)</span>`;
+      } else {
+        return `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Al día (${diffDays}d)</span>`;
+      }
+    }
+
+    function render() {
+      renderEquipos();
+      renderObras();
+      renderViajes();
+      renderCombustible();
+      renderTrabajadores();
+      renderDocVolquetas();
+      renderDocMaquinaria();
+      renderDashboard();
+    }
+
+    function renderEquipos() {
+      const tbody = document.getElementById('tabla-equipos');
+      tbody.innerHTML = state.equipos.map(eq => `
+        <tr class="hover:bg-slate-50">
+          <td class="p-3 font-bold text-slate-900">${eq.codigo}</td>
+          <td class="p-3">${eq.tipo}</td>
+          <td class="p-3">${eq.marca} (${eq.modelo})</td>
+          <td class="p-3 font-semibold">${eq.medicion.toLocaleString()} ${eq.tipo === 'Volqueta' ? 'Km' : 'Hrs'}</td>
+          <td class="p-3"><span class="bg-slate-100 px-2 py-1 rounded border">${eq.obra}</span></td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-bold">Operativo</span></td>
+          <td class="p-3 text-center">
+            <button onclick="deleteEquipo(${eq.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('');
+
+      const opts = state.equipos.map(e => `<option value="${e.codigo}">${e.codigo} (${e.tipo})</option>`).join('');
+      document.getElementById('vj-equipo').innerHTML = opts;
+      document.getElementById('cb-equipo').innerHTML = opts;
+      
+      const volOpts = state.equipos.filter(e => e.tipo === 'Volqueta').map(e => `<option value="${e.codigo}">${e.codigo}</option>`).join('');
+      document.getElementById('dv-equipo').innerHTML = volOpts || '<option>Sin volquetas</option>';
+
+      const maqOpts = state.equipos.filter(e => e.tipo !== 'Volqueta').map(e => `<option value="${e.codigo}">${e.codigo} (${e.tipo})</option>`).join('');
+      document.getElementById('dm-equipo').innerHTML = maqOpts || '<option>Sin maquinaria</option>';
+    }
+
+    function renderObras() {
+      const grid = document.getElementById('grid-obras');
+      grid.innerHTML = state.obras.map(ob => {
+        const eqCount = state.equipos.filter(e => e.obra === ob.nombre).length;
+        return `
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-2">
+            <div class="flex justify-between items-start">
+              <h3 class="font-bold text-slate-800 text-sm">${ob.nombre}</h3>
+              <span class="bg-amber-100 text-amber-800 font-bold text-[10px] px-2 py-0.5 rounded">${eqCount} Equipos</span>
+            </div>
+            <p class="text-xs text-slate-500"><i class="fa-solid fa-location-dot"></i> ${ob.ubicacion}</p>
+            <p class="text-xs text-slate-600 font-semibold"><i class="fa-solid fa-user-tie"></i> ${ob.encargado}</p>
+          </div>
+        `;
+      }).join('');
+
+      const opts = state.obras.map(o => `<option value="${o.nombre}">${o.nombre}</option>`).join('');
+      document.getElementById('eq-obra').innerHTML = opts;
+      document.getElementById('vj-obra').innerHTML = opts;
+    }
+
+    function renderViajes() {
+      const tbody = document.getElementById('tabla-viajes');
+      tbody.innerHTML = state.viajes.map(vj => `
+        <tr class="hover:bg-slate-50">
+          <td class="p-3">${vj.fecha}</td>
+          <td class="p-3 font-bold">${vj.equipo}</td>
+          <td class="p-3">${vj.obra}</td>
+          <td class="p-3 font-medium">${vj.material}</td>
+          <td class="p-3 font-bold text-amber-600">${vj.volumen} m³</td>
+          <td class="p-3">${vj.distancia} Km</td>
+          <td class="p-3 font-bold text-emerald-700">$${vj.costo.toLocaleString()}</td>
+          <td class="p-3 text-center">
+            <button onclick="deleteViaje(${vj.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderCombustible() {
+      const tbody = document.getElementById('tabla-combustible');
+      tbody.innerHTML = state.combustible.map(cb => `
+        <tr class="hover:bg-slate-50">
+          <td class="p-3">${cb.fecha}</td>
+          <td class="p-3 font-bold">${cb.equipo}</td>
+          <td class="p-3">${cb.tipo}</td>
+          <td class="p-3 font-bold text-blue-600">${cb.galones} Gal</td>
+          <td class="p-3 font-bold text-emerald-700">$${cb.costo.toLocaleString()}</td>
+          <td class="p-3">${cb.medicion.toLocaleString()}</td>
+          <td class="p-3 text-slate-500">${cb.estacion}</td>
+          <td class="p-3 text-center">
+            <button onclick="deleteCombustible(${cb.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderTrabajadores() {
+      const tbody = document.getElementById('tabla-trabajadores');
+      tbody.innerHTML = state.trabajadores.map(tr => `
+        <tr class="hover:bg-slate-50">
+          <td class="p-3">
+            <div class="font-bold text-slate-900">${tr.nombre}</div>
+            <div class="text-[10px] text-slate-400">${tr.cargo}</div>
+          </td>
+          <td class="p-3">
+            <div>${getStatusBadge(tr.medico.fecha)}</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">${tr.medico.entidad || '-'}</div>
+          </td>
+          <td class="p-3">
+            <div>${getStatusBadge(tr.alturas.fecha)}</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">${tr.alturas.nivel || '-'}</div>
+          </td>
+          <td class="p-3">
+            <div>${getStatusBadge(tr.licencia.fecha)}</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">${tr.licencia.cat || '-'}</div>
+          </td>
+          <td class="p-3">
+            <div>${getStatusBadge(tr.psico.fecha)}</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">${tr.psico.centro || '-'}</div>
+          </td>
+          <td class="p-3 text-center">
+            <button onclick="deleteTrabajador(${tr.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderDocVolquetas() {
+      const tbody = document.getElementById('tabla-doc-volquetas');
+      tbody.innerHTML = state.docVolquetas.map(dv => {
+        const eq = state.equipos.find(e => e.codigo === dv.equipo);
+        const kmActual = eq ? eq.medicion : 0;
+        const kmFaltantes = dv.mant.proximo - kmActual;
+        const mantBadge = kmFaltantes < 0 
+          ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700">Service Vencido (${Math.abs(kmFaltantes)} Km)</span>`
+          : `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Faltan ${kmFaltantes} Km</span>`;
+
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3 font-bold text-slate-900">${dv.equipo}</td>
+            <td class="p-3">
+              <div>${getStatusBadge(dv.soat.fecha)}</div>
+              <div class="text-[10px] text-slate-400">${dv.soat.aseguradora || '-'}</div>
+            </td>
+            <td class="p-3">
+              <div>${getStatusBadge(dv.tecno.fecha)}</div>
+              <div class="text-[10px] text-slate-400">${dv.tecno.cda || '-'}</div>
+            </td>
+            <td class="p-3">
+              <div>${getStatusBadge(dv.pin.fecha)}</div>
+              <div class="text-[10px] text-slate-400">${dv.pin.num || '-'}</div>
+            </td>
+            <td class="p-3">
+              <div>${getStatusBadge(dv.poliza.fecha)}</div>
+              <div class="text-[10px] text-slate-400">${dv.poliza.num || '-'}</div>
+            </td>
+            <td class="p-3">
+              <div>${getStatusBadge(dv.gps.fecha)}</div>
+              <div class="text-[10px] text-slate-400">${dv.gps.prov || '-'}</div>
+            </td>
+            <td class="p-3">
+              <div>${mantBadge}</div>
+              <div class="text-[10px] text-slate-400">Próximo: ${dv.mant.proximo.toLocaleString()} Km</div>
+            </td>
+            <td class="p-3 text-center">
+              <button onclick="deleteDocVolqueta(${dv.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderDocMaquinaria() {
+      const tbody = document.getElementById('tabla-doc-maquinaria');
+      tbody.innerHTML = state.docMaquinaria.map(dm => {
+        const eq = state.equipos.find(e => e.codigo === dm.equipo);
+        const hrsActual = eq ? eq.medicion : 0;
+        const hrsFaltantes = dm.mant.proximo - hrsActual;
+        const mantBadge = hrsFaltantes < 0 
+          ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700">Service Vencido (${Math.abs(hrsFaltantes)} Hrs)</span>`
+          : `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Faltan ${hrsFaltantes} Hrs</span>`;
+
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3 font-bold text-slate-900">${dm.equipo}</td>
+            <td class="p-3">
+              <div>${getStatusBadge(dm.insp.fecha)}</div>
+              <div class="text-[10px] text-slate-400">${dm.insp.entidad || '-'}</div>
+            </td>
+            <td class="p-3">
+              <div>${getStatusBadge(dm.poliza.fecha)}</div>
+              <div class="text-[10px] text-slate-400">${dm.poliza.num || '-'}</div>
+            </td>
+            <td class="p-3">
+              <div>${getStatusBadge(dm.gps.fecha)}</div>
+              <div class="text-[10px] text-slate-400">${dm.gps.prov || '-'}</div>
+            </td>
+            <td class="p-3">
+              <div>${mantBadge}</div>
+              <div class="text-[10px] text-slate-400">Próximo: ${dm.mant.proximo.toLocaleString()} Hrs</div>
+            </td>
+            <td class="p-3 text-center">
+              <button onclick="deleteDocMaquinaria(${dm.id})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderDashboard() {
+      const volquetes = state.equipos.filter(e => e.tipo === 'Volqueta').length;
+      const maquinas = state.equipos.filter(e => e.tipo !== 'Volqueta').length;
+      document.getElementById('kpi-flota').innerText = state.equipos.length;
+      document.getElementById('kpi-flota-sub').innerText = `${volquetes} Volquetas | ${maquinas} Maquinaria`;
+
+      const totalVolumen = state.viajes.reduce((acc, v) => acc + Number(v.volumen), 0);
+      document.getElementById('kpi-viajes').innerText = state.viajes.length;
+      document.getElementById('kpi-volumen').innerText = `Volumen Total: ${totalVolumen} m³`;
+
+      const totalCostoComb = state.combustible.reduce((acc, c) => acc + Number(c.costo), 0);
+      const totalGalones = state.combustible.reduce((acc, c) => acc + Number(c.galones), 0);
+      document.getElementById('kpi-combustible').innerText = `$${totalCostoComb.toLocaleString()}`;
+      document.getElementById('kpi-galones').innerText = `${totalGalones} Galones suministrados`;
+
+      const alerts = [];
+      const today = new Date('2026-11-09');
+
+      function checkDate(dateStr, label, entity) {
+        if (!dateStr) return;
+        const target = new Date(dateStr);
+        const diffDays = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+        if (diffDays < 0) {
+          alerts.push(`<span class="font-bold text-rose-600">[VENCIDO]</span> ${entity}: ${label} venció hace ${Math.abs(diffDays)} días (${dateStr}).`);
+        } else if (diffDays <= 15) {
+          alerts.push(`<span class="font-bold text-amber-600">[POR VENCER]</span> ${entity}: ${label} vence en ${diffDays} días (${dateStr}).`);
+        }
+      }
+
+      state.trabajadores.forEach(t => {
+        checkDate(t.medico.fecha, 'Examen Médico', `Trabajador ${t.nombre}`);
+        checkDate(t.alturas.fecha, 'Curso de Alturas', `Trabajador ${t.nombre}`);
+        checkDate(t.licencia.fecha, 'Licencia / Operador', `Trabajador ${t.nombre}`);
+        checkDate(t.psico.fecha, 'Psicosensométrico', `Trabajador ${t.nombre}`);
+      });
+
+      state.docVolquetas.forEach(v => {
+        checkDate(v.soat.fecha, 'SOAT', `Volqueta ${v.equipo}`);
+        checkDate(v.tecno.fecha, 'Tecnicomecánica', `Volqueta ${v.equipo}`);
+        checkDate(v.pin.fecha, 'Permiso PIN', `Volqueta ${v.equipo}`);
+        checkDate(v.poliza.fecha, 'Póliza Todo Riesgo', `Volqueta ${v.equipo}`);
+        checkDate(v.gps.fecha, 'Plataforma GPS', `Volqueta ${v.equipo}`);
+      });
+
+      state.docMaquinaria.forEach(m => {
+        checkDate(m.insp.fecha, 'Insp. Técnico-Operativa', `Maquinaria ${m.equipo}`);
+        checkDate(m.poliza.fecha, 'Póliza Equipos', `Maquinaria ${m.equipo}`);
+        checkDate(m.gps.fecha, 'Plataforma GPS', `Maquinaria ${m.equipo}`);
+      });
+
+      document.getElementById('kpi-alertas').innerText = alerts.length;
+      const alertsContainer = document.getElementById('dashboard-alerts-list');
+      if (alerts.length === 0) {
+        alertsContainer.innerHTML = '<p class="text-emerald-700 font-semibold"><i class="fa-solid fa-circle-check"></i> Todos los documentos y mantenimientos se encuentran al día.</p>';
+      } else {
+        alertsContainer.innerHTML = alerts.map(a => `<p>• ${a}</p>`).join('');
+      }
+
+      renderCharts();
+    }
+
+    function renderCharts() {
+      const combData = {};
+      state.combustible.forEach(c => {
+        combData[c.equipo] = (combData[c.equipo] || 0) + Number(c.galones);
+      });
+
+      if (chartComb) chartComb.destroy();
+      chartComb = new Chart(document.getElementById('chartCombustible'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(combData),
+          datasets: [{ label: 'Galones', data: Object.values(combData), backgroundColor: '#f59e0b' }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+
+      const viajesData = {};
+      state.viajes.forEach(v => {
+        viajesData[v.obra] = (viajesData[v.obra] || 0) + 1;
+      });
+
+      if (chartViajes) chartViajes.destroy();
+      chartViajes = new Chart(document.getElementById('chartViajes'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(viajesData),
+          datasets: [{ data: Object.values(viajesData), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'] }]
+        },
+        options: { responsive: true }
+      });
+    }
+
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function saveEquipo(e) {
+      e.preventDefault();
+      state.equipos.push({
+        id: Date.now(),
+        codigo: document.getElementById('eq-codigo').value,
+        tipo: document.getElementById('eq-tipo').value,
+        marca: document.getElementById('eq-marca').value,
+        modelo: document.getElementById('eq-modelo').value,
+        medicion: Number(document.getElementById('eq-medicion').value),
+        obra: document.getElementById('eq-obra').value
+      });
+      closeModal('modal-equipo');
+      saveState();
+    }
+
+    function saveObra(e) {
+      e.preventDefault();
+      state.obras.push({
+        id: Date.now(),
+        nombre: document.getElementById('ob-nombre').value,
+        ubicacion: document.getElementById('ob-ubicacion').value,
+        encargado: document.getElementById('ob-encargado').value
+      });
+      closeModal('modal-obra');
+      saveState();
+    }
+
+    function saveViaje(e) {
+      e.preventDefault();
+      state.viajes.push({
+        id: Date.now(),
+        fecha: new Date().toISOString().split('T')[0],
+        equipo: document.getElementById('vj-equipo').value,
+        obra: document.getElementById('vj-obra').value,
+        material: document.getElementById('vj-material').value,
+        volumen: Number(document.getElementById('vj-volumen').value),
+        distancia: Number(document.getElementById('vj-distancia').value),
+        costo: Number(document.getElementById('vj-costo').value)
+      });
+      closeModal('modal-viaje');
+      saveState();
+    }
+
+    function saveCombustible(e) {
+      e.preventDefault();
+      const equipoCod = document.getElementById('cb-equipo').value;
+      const nuevaMed = Number(document.getElementById('cb-medicion').value);
+
+      state.combustible.push({
+        id: Date.now(),
+        fecha: new Date().toISOString().split('T')[0],
+        equipo: equipoCod,
+        tipo: document.getElementById('cb-tipo').value,
+        galones: Number(document.getElementById('cb-galones').value),
+        costo: Number(document.getElementById('cb-costo').value),
+        medicion: nuevaMed,
+        estacion: document.getElementById('cb-estacion').value
+      });
+
+      const eq = state.equipos.find(e => e.codigo === equipoCod);
+      if (eq && nuevaMed > eq.medicion) eq.medicion = nuevaMed;
+
+      closeModal('modal-combustible');
+      saveState();
+    }
+
+    function saveTrabajador(e) {
+      e.preventDefault();
+      state.trabajadores.push({
+        id: Date.now(),
+        nombre: document.getElementById('tr-nombre').value,
+        cargo: document.getElementById('tr-cargo').value,
+        medico: { entidad: document.getElementById('tr-medico-entidad').value, fecha: document.getElementById('tr-medico-fecha').value },
+        alturas: { nivel: document.getElementById('tr-alturas-nivel').value, fecha: document.getElementById('tr-alturas-fecha').value },
+        licencia: { cat: document.getElementById('tr-licencia-cat').value, fecha: document.getElementById('tr-licencia-fecha').value },
+        psico: { centro: document.getElementById('tr-psico-centro').value, fecha: document.getElementById('tr-psico-fecha').value }
+      });
+      closeModal('modal-trabajador');
+      saveState();
+    }
+
+    function saveDocVolqueta(e) {
+      e.preventDefault();
+      const eqCod = document.getElementById('dv-equipo').value;
+      state.docVolquetas = state.docVolquetas.filter(d => d.equipo !== eqCod);
+      state.docVolquetas.push({
+        id: Date.now(),
+        equipo: eqCod,
+        soat: { aseguradora: document.getElementById('dv-soat-aseguradora').value, fecha: document.getElementById('dv-soat-fecha').value },
+        tecno: { cda: document.getElementById('dv-tecno-cda').value, fecha: document.getElementById('dv-tecno-fecha').value },
+        pin: { num: document.getElementById('dv-pin-num').value, fecha: document.getElementById('dv-pin-fecha').value },
+        poliza: { num: document.getElementById('dv-poliza-num').value, fecha: document.getElementById('dv-poliza-fecha').value },
+        gps: { prov: document.getElementById('dv-gps-proveedor').value, fecha: document.getElementById('dv-gps-fecha').value },
+        mant: { ultimo: Number(document.getElementById('dv-mant-ultimo').value), proximo: Number(document.getElementById('dv-mant-proximo').value) }
+      });
+      closeModal('modal-doc-volqueta');
+      saveState();
+    }
+
+    function saveDocMaquinaria(e) {
+      e.preventDefault();
+      const eqCod = document.getElementById('dm-equipo').value;
+      state.docMaquinaria = state.docMaquinaria.filter(d => d.equipo !== eqCod);
+      state.docMaquinaria.push({
+        id: Date.now(),
+        equipo: eqCod,
+        insp: { entidad: document.getElementById('dm-insp-entidad').value, fecha: document.getElementById('dm-insp-fecha').value },
+        poliza: { num: document.getElementById('dm-poliza-num').value, fecha: document.getElementById('dm-poliza-fecha').value },
+        gps: { prov: document.getElementById('dm-gps-proveedor').value, fecha: document.getElementById('dm-gps-fecha').value },
+        mant: { ultimo: Number(document.getElementById('dm-mant-ultimo').value), proximo: Number(document.getElementById('dm-mant-proximo').value) }
+      });
+      closeModal('modal-doc-maquinaria');
+      saveState();
+    }
+
+    function deleteEquipo(id) { state.equipos = state.equipos.filter(e => e.id !== id); saveState(); }
+    function deleteViaje(id) { state.viajes = state.viajes.filter(v => v.id !== id); saveState(); }
+    function deleteCombustible(id) { state.combustible = state.combustible.filter(c => c.id !== id); saveState(); }
+    function deleteTrabajador(id) { state.trabajadores = state.trabajadores.filter(t => t.id !== id); saveState(); }
+    function deleteDocVolqueta(id) { state.docVolquetas = state.docVolquetas.filter(d => d.id !== id); saveState(); }
+    function deleteDocMaquinaria(id) { state.docMaquinaria = state.docMaquinaria.filter(d => d.id !== id); saveState(); }
+
+    function exportAllCSV() {
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "REGISTRO DE VIAJES Y ACARREOS\nFecha,Equipo,Obra,Material,Volumen_m3,Distancia_Km,Costo_Flete\n";
+      state.viajes.forEach(v => {
+        csvContent += `${v.fecha},${v.equipo},"${v.obra}","${v.material}",${v.volumen},${v.distancia},${v.costo}\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Reporte_Maquinaria_Obras_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
 </body>
 </html>
